@@ -1,110 +1,99 @@
-# CoreOS Vagrant
+based on: https://github.com/veverjak/coreos-mesos-marathon
 
-This repo provides a template Vagrantfile to create a CoreOS virtual machine using the VirtualBox software hypervisor.
-After setup is complete you will have a single CoreOS virtual machine running on your local machine.
+# Motivation
 
-## Streamlined setup
+I want to run marathon-mesos-deimos setup (http://beingasysadmin.wordpress.com/2014/06/27/managing-docker-clusters-using-mesos-and-marathon/) on CoreOS.
 
-1) Install dependencies
+I was ispired by Ebay's building from docker using hosts docker setup (http://www.ebaytechblog.com/2014/05/12/delivering-ebays-ci-solution-with-apache-mesos-part-ii/#.U85a4nV53Ua).
 
-* [VirtualBox][virtualbox] 4.3.10 or greater.
-* [Vagrant][vagrant] 1.6 or greater.
+I want to enjoy both CoreOS and mesos resource management, in future hopefully kubernetes (https://github.com/mesosphere/kubernetes-mesos).
 
-2) Clone this project and get it running!
+# Prerequisites
 
-```
-git clone https://github.com/coreos/coreos-vagrant/
-cd coreos-vagrant
-```
+- fleetctl
+- vagrant
+- virtualbox
+- python
+ - docker-py==0.3.1
+ - ansible
 
-3) Startup and SSH
+# Install
 
-There are two "providers" for Vagrant with slightly different instructions.
-Follow one of the following two options:
+ - Start CoreOS cluster
+  - for testing I am using vagrant - http://coreos.com/docs/running-coreos/platforms/vagrant/
+  - slightly customized version is in coreos-vagrant directory
+ - Connect to fleet from localhost - https://github.com/coreos/fleet/blob/master/Documentation/remote-access.md
+  - fleet is getting ssh-keys from ssh-agent so if you don't have yours there already you can add one using
+  - ``ssh-agent && vagrant ssh-config core-01 | sed -n "s/IdentityFile//gp" | xargs ssh-add``
+  - ``export FLEETCTL_TUNNEL="$(vagrant ssh-config core-01 | sed -n "s/[ ]*HostName[ ]*//gp"):$(vagrant ssh-config core-01 | sed -n "s/[ ]*Port[ ]*//gp")"``
+ - make initial changes on coreos hosts, following commnads have to be run from ansible directory
+  - ansible-playbook -i vagranttest coreos.yml
+ - submit and start following units:
+  - registry
+   - ansible-playbook -i vagranttest coreos-registry.yml
+  - zookeeper
+   - ansible-playbook -i vagranttest coreos-zookeeper.yml
+  - mesos-master
+   - ansible-playbook -i vagranttest coreos-mesos-master.yml
+  - mesos-slave
+   - ansible-playbook -i vagranttest coreos-mesos-slave.yml
+  - marathon
+   - ansible-playbook -i vagranttest coreos-marathon.yml
+ - Test marathon API
+  - ``curl -v -X POST -H "Content-Type: application/json" <marathon-IP>:8080/v2/apps -d@test.json``
+  - test.json:
+``	{
+	"id": "test",
+	"container": {"image": "docker:///debian:jessie", "options" : []},
+	"cmd": "while sleep 10; do date -u +%T; done",
+	"cpus": "0.5",
+	"mem": "268.0",
+		"uris": [ ],
+		"instances": "1"
+	}``
 
-**VirtualBox Provider**
+# Architecture
 
-The VirtualBox provider is the default Vagrant provider. Use this if you are unsure.
+ - Host OS
+  - CoreOS - https://coreos.com/
+   - Native Technology:
+    - ETCD - key/value store 
+    - Fleet - cluster level systemd
+     - Used for triggering cluster apps - zookeeper, mesos-master/slave, marathon
+    - Omaha update protocol - https://github.com/coreos/go-omaha
+  - Mesos - Resource manager gathers resources
+  - Marathon - Mesos framework for running docker images
+  - Deimos - python Docker bindings for mesos-slave
 
-```
-vagrant up
-vagrant ssh
-```
+# Features
 
-**VMware Provider**
+ - Deploy app simply by specifying:
+  - image name
+  - cpu, ram
+  - No. of instances
+ - Fault tolerance - Environment will ensure that apps are running
+ - Speed
+  - Dev/Test
+   - Create stack faster on demand (Ebay has minimal stack up in 10 minutes)
+  - Prod
+   - Faster Scaling - simply run more instances of app
+ - Better resource utilization
+  - Scale apps up/down on demand
+   - http://blog.docker.com/2014/06/dockercon-video-cluster-management-and-containerization-at-twitter/
 
-The VMware provider is a commercial addon from Hashicorp that offers better stability and speed.
-If you use this provider follow these instructions.
+# TODO
 
-```
-vagrant up --provider vmware_fusion
-vagrant ssh
-```
+ - [x] Crate docker images for
+  - Docker Registry
+  - Zookeeper
+  - Mesos-master
+  - Mesos-slave
+  - Marathon (mesos framework)
+ - [ ] Run apps in HA 
+  - [ ] Create pattern Unit files
+   - [ ] Idealy using some tool (ansible...)
+  - [ ] Set dynamic communication between services
+   - using etcd
+   - using haproxy generated from marathon (https://github.com/mesosphere/marathon)
 
-``vagrant up`` triggers vagrant to download the CoreOS image (if necessary) and (re)launch the instance
 
-``vagrant ssh`` connects you to the virtual machine.
-Configuration is stored in the directory so you can always return to this machine by executing vagrant ssh from the directory where the Vagrantfile was located.
-
-3) Get started [using CoreOS][using-coreos]
-
-[virtualbox]: https://www.virtualbox.org/
-[vagrant]: https://www.vagrantup.com/downloads.html
-[using-coreos]: http://coreos.com/docs/using-coreos/
-
-#### Shared Folder Setup
-
-There is optional shared folder setup.
-You can try it out by adding a section to your Vagrantfile like this.
-
-```
-config.vm.network "private_network", ip: "172.17.8.150"
-config.vm.synced_folder ".", "/home/core/share", id: "core", :nfs => true,  :mount_options   => ['nolock,vers=3,udp']
-```
-
-After a 'vagrant reload' you will be prompted for your local machine password.
-
-#### Provisioning with user-data
-
-The Vagrantfile will provision your CoreOS VM(s) with [coreos-cloudinit][coreos-cloudinit] if a `user-data` file is found in the project directory.
-coreos-cloudinit simplifies the provisioning process through the use of a script or cloud-config document.
-
-To get started, copy `user-data.sample` to `user-data` and make any necessary modifications.
-Check out the [coreos-cloudinit documentation][coreos-cloudinit] to learn about the available features.
-
-[coreos-cloudinit]: https://github.com/coreos/coreos-cloudinit
-
-#### Configuration
-
-The Vagrantfile will parse a `config.rb` file containing a set of options used to configure your CoreOS cluster.
-See `config.rb.sample` for more information.
-
-## Cluster Setup
-
-Launching a CoreOS cluster on Vagrant is as simple as configuring `$num_instances` in a `config.rb` file to 3 (or more!) and running `vagrant up`.
-Make sure you provide a fresh discovery URL in your `user-data` if you wish to bootstrap etcd in your cluster.
-
-## New Box Versions
-
-CoreOS is a rolling release distribution and versions that are out of date will automatically update.
-If you want to start from the most up to date version you will need to make sure that you have the latest box file of CoreOS.
-Simply remove the old box file and vagrant will download the latest one the next time you `vagrant up`.
-
-```
-vagrant box remove coreos --provider vmware_fusion
-vagrant box remove coreos --provider virtualbox
-```
-
-## Docker Forwarding
-
-By setting the `$expose_docker_tcp` configuration value you can forward a local TCP port to docker on
-each CoreOS machine that you launch. The first machine will be available on the port that you specify
-and each additional machine will increment the port by 1.
-
-Follow the [Enable Remote API instructions][coreos-enabling-port-forwarding] to get the CoreOS VM setup to work with port forwarding.
-
-[coreos-enabling-port-forwarding]: https://coreos.com/docs/launching-containers/building/customizing-docker/#enable-the-remote-api-on-a-new-socket
-
-Then you can then use the `docker` command from your local shell by setting `DOCKER_HOST`:
-
-    export DOCKER_HOST=tcp://localhost:2375
