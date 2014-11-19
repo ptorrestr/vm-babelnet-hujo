@@ -1,18 +1,18 @@
 ---
 # Create docker directory
 - name: Create docker directory
-  file: path=docker/docker-babelnet-hujo state=directory
+  file: path={{ playbook_dir }}/docker/docker-babelnet-hujo state=directory
   tags:
     - configuration
   
 # Build and push image
 - name: Create babelnet-hujo Dockerfile
-  template: src=babelnet-hujo-dockerfile.j2 dest=docker/docker-babelnet-hujo/Dockerfile
+  template: src=babelnet-hujo-dockerfile.j2 dest={{ playbook_dir }}/docker/docker-babelnet-hujo/Dockerfile
   tags:
     - configuration
 
 - name: Build babelnet-hujo image
-  docker_image: docker_url=tcp://127.0.0.1:2375 path="docker/docker-babelnet-hujo" name="{{ babelnethujo_image_name }}" state="build"
+  docker_image: docker_url=tcp://127.0.0.1:2375 path="{{ playbook_dir }}/docker/docker-babelnet-hujo" name="{{ babelnethujo_image_name }}" state="build"
   tags:
     - docker
     - docker_build
