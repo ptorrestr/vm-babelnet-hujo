@@ -25,7 +25,7 @@ RUN cd ark-tweet* && mvn install -Dmaven.test.skip=true
 RUN cd virt-jena && mvn install -Dmaven.test.skip=true
 RUN cd wget-maven*/wget* && mvn install -Dmaven.test.skip=true
 
-RUN git clone -b service http://ptorres:sanjayatheboss@gitlab.insight-centre.org/hujo/babelnetproject.git
+RUN git clone -b service http://{{ hujo_account }}:{{ hujo_password }}@gitlab.insight-centre.org/hujo/babelnetproject.git
 
 EXPOSE 8080
 
