@@ -21,6 +21,7 @@ git subtree pull --prefix ansible/roles/ansible-coreos-babelnet-hujo https://git
   - ``eval `ssh-agent -s` ``
   - ``ssh-agent && vagrant ssh-config core-01 | sed -n "s/IdentityFile//gp" | xargs ssh-add``
   - ``export FLEETCTL_TUNNEL="$(vagrant ssh-config core-01 | sed -n "s/[ ]*HostName[ ]*//gp"):$(vagrant ssh-config core-01 | sed -n "s/[ ]*Port[ ]*//gp")"``
+  - ``export DOCKER_HOST=tcp://localhost:2375``
  - Remove fleetctl known\_host file and clean the ssh known\_host file
   - ``rm ~/.fleetctl/known_hosts`` 
  - make initial changes on coreos hosts, following commnads have to be run from ansible directory
