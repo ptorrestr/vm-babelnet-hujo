@@ -1,5 +1,8 @@
 based on: https://github.com/veverjak/coreos-mesos-marathon
 
+# Pull playbooks
+git subtree pull --prefix ansible/roles/ansible-coreos-babelnet-hujo https://github.com/ptorrestr/ansible-coreos-babelnet-hujo master
+
 # Prerequisites
 
 - fleetctl
