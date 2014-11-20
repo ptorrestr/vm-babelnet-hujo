@@ -24,6 +24,7 @@ git subtree pull --prefix ansible/roles/ansible-coreos-babelnet-hujo https://git
   - ``export DOCKER_HOST=tcp://localhost:2375``
  - Remove fleetctl known\_host file and clean the ssh known\_host file
   - ``rm ~/.fleetctl/known_hosts`` 
+ - Setup your hujo-account on ansible/group\_vars/all
  - make initial changes on coreos hosts, following commnads have to be run from ansible directory
   - make sure that ansible is in the path.
   - ansible-playbook -i vagranttest coreos.yml
