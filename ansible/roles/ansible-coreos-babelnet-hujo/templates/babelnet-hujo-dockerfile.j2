@@ -5,7 +5,7 @@ FROM {{ wildfly_image_name }}
 MAINTAINER Pablo Torres <pablo.torres.t@gmail.com>
 
 # Get dependencies:
-MKDIR /opt/jboss/deps
+RUN mkdir /opt/jboss/deps
 WORKDIR /opt/jboss/deps
 RUN wget http://babelnet.org/data/2.5/babelnet-2.5-core-index.tar.bz2
 RUN bunzip2 babelnet-2.5-core-index.tar.bz2
