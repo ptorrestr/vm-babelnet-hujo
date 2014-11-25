@@ -48,5 +48,7 @@ git subtree pull --prefix ansible/roles/ansible-coreos-babelnet-hujo https://git
 		"instances": "1"
 	}``
 
+#Add new playbooks:
+
 
 
