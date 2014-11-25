@@ -6,13 +6,9 @@ MAINTAINER Pablo Torres <pablo.torres.t@gmail.com>
 
 RUN apt-get install -y bzip2
 
-# Set permissions:
-USER root
-RUN chmod 0777 /opt
-
 # Get dependencies:
-USER jboss
-WORKDIR /opt
+MKDIR /opt/jboss/deps
+WORKDIR /opt/jboss/deps
 RUN wget http://babelnet.org/data/2.5/babelnet-2.5-core-index.tar.bz2
 RUN bunzip2 babelnet-2.5-core-index.tar.bz2
 RUN wget https://github.com/dbpedia-spotlight/dbpedia-spotlight/archive/release-0.7.zip
@@ -33,9 +29,9 @@ RUN cd wget-maven*/wget* && mvn install -Dmaven.test.skip=true
 
 # Compile program
 RUN git clone -b service http://{{ hujo_account }}:{{ hujo_password }}@gitlab.insight-centre.org/hujo/babelnetproject.git
-ENV BABELNET_HOME /opt/babelnetproject
+ENV BABELNET_HOME /opt/jboss/deps/babelnetproject
 # make installation (copy)
 RUN mvn -p $BABELNET_HOME/pom.xml package -Dmaven.test.skip=true
 RUN mv $BABELNET_HOME/target/babelnet.war $JBOSS_HOME/standalone/deployments
-WORKDIR $BABELNET_HOME
+CMD ["cd /opt/jboss/deps/babelnetproject && /opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0"]
 
