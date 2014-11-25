@@ -6,7 +6,12 @@ MAINTAINER Pablo Torres <pablo.torres.t@gmail.com>
 
 RUN apt-get install -y bzip2
 
+# Set permissions:
+USER root
+RUN chmod 0777 /opt
+
 # Get dependencies:
+USER jboss
 WORKDIR /opt
 RUN wget http://babelnet.org/data/2.5/babelnet-2.5-core-index.tar.bz2
 RUN bunzip2 babelnet-2.5-core-index.tar.bz2
