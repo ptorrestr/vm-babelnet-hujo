@@ -3,8 +3,8 @@ Description=Babelnet Hujo service
 
 [Service]
 EnvironmentFile=/etc/environment
-ExecStart=/bin/bash -c "/usr/bin/docker run --rm --net=\"host\" -e ZOOKEEPER_ENDPOINTS=`/var/lib/scripts/get_zookeeper_endpoints.sh` -e COREOS_PUBLIC_IPV4=${COREOS_PUBLIC_IPV4} --name babelnet-hujo -p 8080:8080 {{ babelnethujo_image_name }}"
-ExecStop=/usr/bin/docker rm -f babelenet-hujo
+ExecStart=/bin/bash -c "/usr/bin/docker run --rm --net=\"host\" --name babelnet-hujo -p 8080:8080 {{ babelnethujo_image_name }}"
+ExecStop=/usr/bin/docker rm -f babelnet-hujo
 
 [X-Fleet]
 Conflicts=babelnet-hujo.*.service
