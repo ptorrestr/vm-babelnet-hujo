@@ -1,17 +1,36 @@
 # DOCKER-VERSION 1.0.1
 # VERSION        0.5
 # mesos-master
-FROM debian:jessie 
+FROM {{ wildfly_image_name }}
 MAINTAINER Pablo Torres <pablo.torres.t@gmail.com>
 
-RUN apt-get clean
-RUN apt-get update -y
-RUN apt-get install -y default-jdk maven git subversion wget sed
+RUN apt-get install -y bzip2
 
-RUN git clone https://ptorres:sanjayatheboss@gitlab.insight-centre.org/hujo/babelnetproject.git
-CMD /bin/bash -c 'cd babelnetproject && ./install-dep.sh'
+# Get dependencies:
+WORKDIR /opt
+RUN wget http://babelnet.org/data/2.5/babelnet-2.5-core-index.tar.bz2
+RUN bunzip2 babelnet-2.5-core-index.tar.bz2
+RUN wget https://github.com/dbpedia-spotlight/dbpedia-spotlight/archive/release-0.7.zip
+RUN unzip release-0.7.zip
+RUN git clone --progress https://github.com/ptorrestr/jawjaw
+RUN git clone --progress https://github.com/ptorrestr/ws4j
+RUN git clone --progress https://github.com/brendano/ark-tweet-nlp
+RUN git clone --progress https://github.com/srdc/virt-jena
+RUN git clone --progress https://github.com/ptorrestr/wget-maven-plugin
 
-EXPOSE 8080
+#Compile and install deps:
+RUN cd dbpedia-* && mvn install -Dmaven.test.skip=true
+RUN cd jawjaw* && mvn install -Dmaven.test.skip=true
+RUN cd ws4j* && mvn install -Dmaven.test.skip=true
+RUN cd ark-tweet* && mvn install -Dmaven.test.skip=true
+RUN cd virt-jena && mvn install -Dmaven.test.skip=true
+RUN cd wget-maven*/wget* && mvn install -Dmaven.test.skip=true
 
-CMD /bin/bash -c 'cd babelnetproject && mvn jboss-as:run -Dmaven.test.skip=true'
+# Compile program
+RUN git clone -b service http://{{ hujo_account }}:{{ hujo_password }}@gitlab.insight-centre.org/hujo/babelnetproject.git
+ENV BABELNET_HOME /opt/babelnetproject
+# make installation (copy)
+RUN mvn -p $BABELNET_HOME/pom.xml package -Dmaven.test.skip=true
+RUN mv $BABELNET_HOME/target/babelnet.war $JBOSS_HOME/standalone/deployments
+WORKDIR $BABELNET_HOME
 

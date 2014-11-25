@@ -1,18 +1,24 @@
 ---
+# Create docker directory
+- name: Create docker directory
+  file: path={{ playbook_dir }}/docker/docker-babelnet-hujo state=directory
+  tags:
+    - configuration
+  
 # Build and push image
 - name: Create babelnet-hujo Dockerfile
-  template: src=bablenet-hujo-dockerfile.j2 dest=roles/ansible-coreos-babelnet-hujo/docker/docker-babelnet-hujo/Dockerfile
+  template: src=babelnet-hujo-dockerfile.j2 dest={{ playbook_dir }}/docker/docker-babelnet-hujo/Dockerfile
   tags:
     - configuration
 
 - name: Build babelnet-hujo image
-  docker_image: docker_url=tcp://127.0.0.1:2375 path="roles/ansible-coreos-babelnet-hujo/docker/docker-bablenet-hujo" name="{{ babelnethujo_image_name }}" state="build"
+  docker_image: docker_url=tcp://127.0.0.1:2375 path="{{ playbook_dir }}/docker/docker-babelnet-hujo" name="{{ babelnethujo_image_name }}" state="build"
   tags:
     - docker
     - docker_build
 
 - name: Push babelnet-hujo image to repo
-  shell: "docker push {{ babelnet-hujo_image_name }}"
+  shell: "docker push {{ babelnethujo_image_name }}"
   tags:
     - docker
     - docker_push
