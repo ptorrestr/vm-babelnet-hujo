@@ -49,6 +49,7 @@ git subtree pull --prefix ansible/roles/ansible-coreos-babelnet-hujo https://git
 	}``
 
 #Add new playbooks:
+git subtree add --prefix ansible/roles/{name} https://github.com/ptorrestr/{name} master --squash
 
-
-
+#Update playbooks:
+git subtree pull --prefix ansible/roles/{name} https://github.com/ptorrestr/{name} master --squash
