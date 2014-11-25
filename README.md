@@ -33,6 +33,8 @@ git subtree pull --prefix ansible/roles/ansible-coreos-babelnet-hujo https://git
    - ansible-playbook -i vagranttest coreos-registry.yml
   - zookeeper
    - ansible-playbook -i vagranttest coreos-zookeeper.yml
+  - wildfly
+   - ansible-playbook -i vagranttest coreos-wildfly.yml
   - babelnet-hujo
    - ansible-playbook -i vagranttest coreos-babelnet-hujo.yml
  - Test marathon API

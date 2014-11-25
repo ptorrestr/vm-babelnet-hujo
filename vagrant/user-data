@@ -1,7 +1,7 @@
 #cloud-config
 coreos:
   etcd:
-    discovery: https://discovery.etcd.io/a6d9e5365501b6ff41452fd0d0f0a637
+    discovery: https://discovery.etcd.io/93338222207c36b3801b474fec0377e1
     addr: $public_ipv4:4001
     peer-addr: $public_ipv4:7001
   fleet:
