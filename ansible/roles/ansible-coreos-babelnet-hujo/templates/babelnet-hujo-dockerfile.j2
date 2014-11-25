@@ -4,8 +4,6 @@
 FROM {{ wildfly_image_name }}
 MAINTAINER Pablo Torres <pablo.torres.t@gmail.com>
 
-RUN apt-get install -y bzip2
-
 # Get dependencies:
 MKDIR /opt/jboss/deps
 WORKDIR /opt/jboss/deps
