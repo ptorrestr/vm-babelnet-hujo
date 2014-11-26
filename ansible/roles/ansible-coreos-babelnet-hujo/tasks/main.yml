@@ -29,19 +29,36 @@
   tags:
     - configuration
 
+# Babelnet-index
+- name: Create babelnet-index Units
+  template: src=babelnet-index.x.service.j2 dest={{ playbook_dir }}/units/babelnet-index.1.service
+  tags:
+    - configuration
+
+- name: Submit babelnet-index units
+  shell: fleetctl --tunnel {{ fleet_endpoint }} submit {{ playbook_dir }}/untis/babelnet-index.1.service
+  tags:
+    - fleet
+    - fleet_submit
+
+- name: Start babelnet-index units
+  shell: sleep 5 && fleetctl --tunell {{ fleet_endpoint }} start {{ playbook_dir }}/units/babelnet-index.1.service
+  tags:
+    - fleet
+    - fleet_start
+
+# Babelnet-hujo
 - name: Create babelnet-hujo Units
   template: src=babelnet-hujo.x.service.j2 dest={{ playbook_dir }}/units/babelnet-hujo.1.service
   tags:
     - configuration
 
-# Submit units to fleet
 - name: Submit babelnet-hujo units
   shell: fleetctl --tunnel {{ fleet_endpoint }} submit {{ playbook_dir }}/units/babelnet-hujo.1.service
   tags:
     - fleet
     - fleet_submit
 
-# Start units via fleet
 - name: Start babelnet-hujo units
   shell: sleep 5 && fleetctl --tunnel {{ fleet_endpoint }} start {{ playbook_dir }}/units/babelnet-hujo.1.service
   tags:
