@@ -30,6 +30,14 @@
     - configuration
 
 # Babelnet-index
+- name: Find registry host
+  choose_registry_machine: IPS="{{ item['IPS'] }}" IDS="{{ item['IDS'] }}"
+  register: registry_host
+  with_items:
+    - "{{ fleetctl_hosts['stdout'] }}"
+  tags:
+    - configuration
+
 - name: Create babelnet-index Units
   template: src=babelnet-index.x.service.j2 dest={{ playbook_dir }}/units/babelnet-index.1.service
   tags:
