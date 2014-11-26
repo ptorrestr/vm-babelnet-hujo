@@ -51,7 +51,7 @@
     - configuration
 
 - name: Submit babelnet-index units
-  shell: fleetctl --tunnel {{ fleet_endpoint }} submit {{ playbook_dir }}/untis/babelnet-index.1.service
+  shell: fleetctl --tunnel {{ fleet_endpoint }} submit {{ playbook_dir }}/units/babelnet-index.1.service
   tags:
     - fleet
     - fleet_submit
