@@ -23,18 +23,25 @@
     - docker
     - docker_push
 
+
+- name: Gather fleet machines info
+  get_coreos_machines: tunnel={{ fleet_endpoint }}
+  register: fleetctl_hosts
+  tags:
+    - configuration
+    - coreos_registry
+
+- name: Find index host
+  choose_registry_machine: IPS="{{ item['IPS'] }}" IDS="{{ item['IDS'] }}"
+  register: index_host
+  with_items:
+    - "{{ fleetctl_hosts['stdout'] }}"
+  tags:
+   - configuration
+
 # Create required fleet unit files
 - name: Create Units directory
   file: path={{ playbook_dir }}/units state=directory
-  tags:
-    - configuration
-
-# Babelnet-index
-- name: Find registry host
-  choose_registry_machine: IPS="{{ item['IPS'] }}" IDS="{{ item['IDS'] }}"
-  register: registry_host
-  with_items:
-    - "{{ fleetctl_hosts['stdout'] }}"
   tags:
     - configuration
 
