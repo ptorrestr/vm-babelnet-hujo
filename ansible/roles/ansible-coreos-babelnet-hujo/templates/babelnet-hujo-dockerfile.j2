@@ -4,11 +4,12 @@
 FROM {{ wildfly_image_name }}
 MAINTAINER Pablo Torres <pablo.torres.t@gmail.com>
 
+# Index
+VOLUME ["/data"]
+
 # Get dependencies:
 RUN mkdir /opt/jboss/deps
 WORKDIR /opt/jboss/deps
-RUN wget http://babelnet.org/data/2.5/babelnet-2.5-core-index.tar.bz2
-RUN bunzip2 babelnet-2.5-core-index.tar.bz2
 RUN wget https://github.com/dbpedia-spotlight/dbpedia-spotlight/archive/release-0.7.zip
 RUN unzip release-0.7.zip
 RUN git clone --progress https://github.com/ptorrestr/jawjaw
@@ -31,5 +32,6 @@ ENV BABELNET_HOME /opt/jboss/deps/babelnetproject
 # make installation (copy)
 RUN mvn -p $BABELNET_HOME/pom.xml package -Dmaven.test.skip=true
 RUN mv $BABELNET_HOME/target/babelnet.war $JBOSS_HOME/standalone/deployments
+RUN ln -s /data/BabelNet-2.5 $BABELNET_HOME/BabelNet-2.5
 CMD ["cd /opt/jboss/deps/babelnetproject && /opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0"]
 
