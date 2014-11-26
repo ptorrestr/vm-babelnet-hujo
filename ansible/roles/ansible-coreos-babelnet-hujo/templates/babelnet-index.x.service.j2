@@ -1,0 +1,10 @@
+[Unit]
+Description=Babelnet Index installation service
+
+[Service]
+ExecStart=/bin/bash -c "if [ ! -d /data/BabelNet-2.5 ];then /usr/bin/wget http://babelnet.org/data/2.5/babelnet-2.5-core-index.tar.bz2; /usr/bin/bzip2 /data/babelnet-2.5-core-index.tar.bz2; fi"
+RemainAfterExit=yes
+Type=oneshot
+
+[X-Fleet]
+MachineID={{ registry_host.results[0].ID }}
