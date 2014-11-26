@@ -57,7 +57,7 @@
     - fleet_submit
 
 - name: Start babelnet-index units
-  shell: sleep 5 && fleetctl --tunell {{ fleet_endpoint }} start {{ playbook_dir }}/units/babelnet-index.1.service
+  shell: sleep 5 && fleetctl --tunnel {{ fleet_endpoint }} start {{ playbook_dir }}/units/babelnet-index.1.service
   tags:
     - fleet
     - fleet_start
