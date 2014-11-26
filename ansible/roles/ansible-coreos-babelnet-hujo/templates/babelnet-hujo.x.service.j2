@@ -1,5 +1,7 @@
 [Unit]
+After=babelnet-index.1.service
 Description=Babelnet Hujo service
+Requires=babelnet-index.1.service
 
 [Service]
 EnvironmentFile=/etc/environment
