@@ -33,5 +33,6 @@ ENV BABELNET_HOME /opt/jboss/deps/babelnetproject
 RUN mvn -f $BABELNET_HOME/pom.xml package -Dmaven.test.skip=true
 RUN mv $BABELNET_HOME/target/babelnet.war $JBOSS_HOME/standalone/deployments
 RUN ln -s /data/BabelNet-2.5 $BABELNET_HOME/BabelNet-2.5
-CMD ["cd /opt/jboss/deps/babelnetproject && /opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0"]
+WORKDIR $BABELNET_HOME
+CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0"]
 

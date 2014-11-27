@@ -2,7 +2,7 @@
 Description=Babelnet Index installation service
 
 [Service]
-ExecStart=/bin/bash -c "if [ ! -d /data/BabelNet-2.5 ];then cd /data && /usr/bin/wget http://babelnet.org/data/2.5/babelnet-2.5-core-index.tar.bz2; /usr/bin/bunzip2 /data/babelnet-2.5-core-index.tar.bz2; fi"
+ExecStart=/bin/bash -c "if [ ! -d /data/BabelNet-2.5 ];then cd /data && /usr/bin/wget http://babelnet.org/data/2.5/babelnet-2.5-core-index.tar.bz2; /usr/bin/bunzip2 /data/babelnet-2.5-core-index.tar.bz2; /usr/bin/tar -xvf /data/babelnet-2.5-core-index.tar; rm /data/babelnet-2.5-core-index.tar.bz2 fi"
 RemainAfterExit=yes
 Type=oneshot
 
