@@ -44,6 +44,7 @@ $enable_serial_logging=false
 # You can then use the docker tool locally by setting the following env var:
 #   export DOCKER_HOST='tcp://127.0.0.1:2375'
 $expose_docker_tcp=2375
+$expose_8080_tcp=9990
 
 # Setting for VirtualBox VMs
 $vb_gui = false
