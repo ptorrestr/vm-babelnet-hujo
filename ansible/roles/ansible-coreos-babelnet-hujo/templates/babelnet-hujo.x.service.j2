@@ -6,7 +6,8 @@ Requires=babelnet-index.1.service
 [Service]
 EnvironmentFile=/etc/environment
 ExecStart=/bin/bash -c "/usr/bin/docker run --rm --net=\"host\" --name babelnet-hujo -v /data:/data -p 8080:8080 {{ babelnethujo_image_name }}"
-ExecStop=/usr/bin/docker rm -f babelnet-hujo
+ExecStop=/usr/bin/docker stop babelnet-hujo
+ExecStopPost=/usr/bin/docker rm -f babelnet-hujo
 
 [X-Fleet]
 Conflicts=babelnet-hujo.*.service
