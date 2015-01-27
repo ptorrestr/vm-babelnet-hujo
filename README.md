@@ -12,7 +12,7 @@ git subtree pull --prefix ansible/roles/ansible-coreos-babelnet-hujo https://git
 - virtualbox
 - python
  - docker-py==0.3.1
- - ansible (pip install ansible==1.5)
+ - ansible
 
 # Install
 
@@ -48,11 +48,3 @@ git subtree add --prefix ansible/roles/{name} https://github.com/ptorrestr/{name
 
 #Update playbooks:
 git subtree pull --prefix ansible/roles/{name} https://github.com/ptorrestr/{name} master --squash
-
-#Debugging
-Add this text for the variable in ansible
-``
-- name: Display variable
-  debug: var=variable
-``
-
