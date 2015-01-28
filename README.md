@@ -33,8 +33,6 @@ git subtree pull --prefix ansible/roles/ansible-coreos-babelnet-hujo https://git
  - submit and start following units:
   - registry
    - ansible-playbook -i vagranttest coreos-registry.yml
-  - zookeeper
-   - ansible-playbook -i vagranttest coreos-zookeeper.yml
   - wildfly
    - ansible-playbook -i vagranttest coreos-wildfly.yml
   - babelnet-hujo
