@@ -27,7 +27,7 @@ RUN cd virt-jena && mvn install -Dmaven.test.skip=true
 RUN cd wget-maven*/wget* && mvn install -Dmaven.test.skip=true
 
 # Compile program
-RUN git clone -b service http://{{ hujo_account }}:{{ hujo_password }}@gitlab.insight-centre.org/hujo/babelnetproject.git
+RUN git clone -b 1.0-SNAPSHOT http://{{ hujo_account }}:{{ hujo_password }}@gitlab.insight-centre.org/hujo/babelnetproject.git
 ENV BABELNET_HOME /opt/jboss/deps/babelnetproject
 # make installation (copy)
 RUN mvn -f $BABELNET_HOME/pom.xml package -Dmaven.test.skip=true
